@@ -1066,3 +1066,7 @@ img { max-width: 100%; display: block; }
     flex: 0 1 280px;
     text-align: center;
 }
+
+.contact-cards-centered .contact-card-icon {
+    margin: 0 auto 14px;
+}
