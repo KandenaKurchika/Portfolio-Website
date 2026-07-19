@@ -1053,4 +1053,16 @@ img { max-width: 100%; display: block; }
     }
 }
 
+/* ── Centered Contact Cards ───────────────────────────────── */
+.contact-cards-centered {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 28px;
+    padding: 10px 0;
+}
 
+.contact-cards-centered .contact-card {
+    flex: 0 1 280px;
+    text-align: center;
+}
