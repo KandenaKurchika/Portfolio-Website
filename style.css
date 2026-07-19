@@ -471,7 +471,586 @@ img { max-width: 100%; display: block; }
     .nav-links.active { right: 0; }
     .nav-toggle { display: block; }
     .skills-grid { grid-template-columns: 1fr; }
-    .projects-grid { grid-template-columns: 1fr; }
     .hero-cta { flex-direction: column; align-items: center; }
     .floating-badge { display: none; }
 }
+
+/* ============================================================
+   KAI Floating Chat Widget Style (Indigo/Teal Theme Integration)
+   ============================================================ */
+
+/* ── Floating Bubble ─────────────────────────────────────── */
+.kai-bubble {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: var(--accent-gradient);
+    border: none;
+    cursor: pointer;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    box-shadow: 0 6px 30px var(--accent-glow);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s ease;
+    animation: kai-pulse 3s ease-in-out infinite;
+}
+.kai-bubble:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 40px rgba(108, 99, 255, 0.5);
+}
+.kai-bubble--active {
+    animation: none;
+    transform: scale(0.92);
+}
+.kai-bubble__icon { line-height: 1; }
+.kai-bubble__label {
+    position: absolute;
+    bottom: 68px;
+    right: 0;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.kai-bubble:hover .kai-bubble__label {
+    opacity: 1;
+    transform: translateY(0);
+}
+@keyframes kai-pulse {
+    0%, 100% { box-shadow: 0 6px 30px var(--accent-glow); }
+    50%       { box-shadow: 0 6px 45px rgba(108, 99, 255, 0.55); }
+}
+
+/* ── Welcome Tooltip ─────────────────────────────────────── */
+.kai-tooltip {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10000;
+}
+.kai-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    right: 26px;
+    width: 10px;
+    height: 10px;
+    background: var(--bg-card);
+    border-right: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+    transform: rotate(45deg);
+}
+.kai-tooltip--visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── Chat Widget Panel ───────────────────────────────────── */
+.kai-widget {
+    position: fixed;
+    bottom: 108px;
+    right: 32px;
+    width: 430px;
+    height: 560px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 9998;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(108, 99, 255, 0.1);
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.kai-widget.kai-open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
+}
+
+/* ── Widget Header ───────────────────────────────────────── */
+.kai-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    background: linear-gradient(135deg, rgba(108, 99, 255, 0.15), rgba(0, 212, 170, 0.08));
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+.kai-header__avatar {
+    width: 38px;
+    height: 38px;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    color: #fff;
+}
+.kai-header__info { flex: 1; min-width: 0; }
+.kai-header__name {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+.kai-header__status {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 2px;
+}
+.kai-status-dot {
+    width: 7px;
+    height: 7px;
+    background: #00d4aa;
+    border-radius: 50%;
+    animation: kai-blink 2s ease-in-out infinite;
+}
+@keyframes kai-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+}
+.kai-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.3rem;
+    line-height: 1;
+    padding: 4px;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+}
+.kai-close:hover { color: var(--text-primary); background: rgba(255, 255, 255, 0.06); }
+
+/* ── Chat Area ───────────────────────────────────────────── */
+.kai-chat-area {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 16px 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(108, 99, 255, 0.2) transparent;
+}
+.kai-chat-area::-webkit-scrollbar { width: 4px; }
+.kai-chat-area::-webkit-scrollbar-track { background: transparent; }
+.kai-chat-area::-webkit-scrollbar-thumb {
+    background: rgba(108, 99, 255, 0.25);
+    border-radius: 99px;
+}
+
+/* ── Messages ────────────────────────────────────────────── */
+.kai-msg {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    animation: kai-fadeUp 0.35s ease both;
+}
+.kai-msg--user { flex-direction: row-reverse; }
+
+@keyframes kai-fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.kai-msg__avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(108, 99, 255, 0.12);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.kai-msg__bubble {
+    max-width: 78%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    word-break: break-word;
+}
+.kai-msg--bot .kai-msg__bubble {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 4px;
+    color: var(--text-primary);
+}
+.kai-msg--user .kai-msg__bubble {
+    background: var(--accent-gradient);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+
+/* Response cards inside bot messages */
+.kai-msg__bubble .response-card {
+    background: rgba(108, 99, 255, 0.06);
+    border-left: 3px solid var(--accent-primary);
+    border-radius: 10px;
+    padding: 10px 13px;
+    margin: 10px 0;
+}
+.kai-msg__bubble .response-card h3 {
+    color: var(--accent-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+}
+.kai-msg__bubble .response-card p { color: var(--text-secondary); font-size: 0.82rem; margin: 4px 0; }
+.kai-msg__bubble .response-card strong { color: var(--text-primary); }
+.kai-msg__bubble .response-card a { color: var(--accent-secondary); font-weight: 600; text-decoration: none; }
+.kai-msg__bubble .response-card a:hover { text-decoration: underline; }
+.kai-msg__bubble h2 { color: var(--accent-secondary); font-size: 0.9rem; margin-bottom: 8px; }
+.kai-msg__bubble ul { padding-left: 16px; }
+.kai-msg__bubble li { font-size: 0.82rem; color: var(--text-secondary); margin: 3px 0; }
+
+/* ── Typing Indicator ────────────────────────────────────── */
+.kai-typing .kai-msg__bubble {
+    padding: 14px 18px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+.kai-typing-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--accent-secondary);
+    border-radius: 50%;
+    display: inline-block;
+    animation: kai-bounce 1.2s ease-in-out infinite;
+}
+.kai-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.kai-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes kai-bounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+    40%            { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ── Suggested Chips ─────────────────────────────────────── */
+.kai-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 14px 12px;
+    flex-shrink: 0;
+    transition: opacity 0.3s ease, max-height 0.3s ease;
+    max-height: 120px;
+    overflow: hidden;
+}
+.kai-suggestions--hidden {
+    opacity: 0;
+    max-height: 0;
+    padding: 0;
+    pointer-events: none;
+}
+.kai-chip {
+    background: rgba(108, 99, 255, 0.08);
+    border: 1px solid rgba(108, 99, 255, 0.25);
+    color: var(--accent-primary);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 5px 11px;
+    border-radius: 99px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    transition: background 0.2s, transform 0.2s, border-color 0.2s;
+}
+.kai-chip:hover {
+    background: rgba(108, 99, 255, 0.15);
+    border-color: var(--accent-primary);
+    transform: translateY(-1px);
+}
+.kai-chip:focus { outline: none; border-color: var(--accent-secondary); }
+
+/* ── Input Area ──────────────────────────────────────────── */
+.kai-input-area {
+    padding: 12px 14px 14px;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    flex-shrink: 0;
+}
+.kai-input-row { display: flex; align-items: flex-end; gap: 10px; }
+.kai-input-field {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px 14px;
+    color: var(--text-primary);
+    font-size: 0.88rem;
+    font-family: var(--font-main);
+    resize: none;
+    outline: none;
+    max-height: 80px;
+    line-height: 1.5;
+    transition: border-color 0.2s, background 0.2s;
+}
+.kai-input-field:focus { border-color: var(--accent-primary); background: rgba(255,255,255,0.05); }
+.kai-input-field::placeholder { color: var(--text-muted); }
+
+.kai-send-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: var(--accent-gradient);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+    transition: transform 0.2s, opacity 0.2s;
+}
+.kai-send-btn:hover:not(:disabled) { transform: scale(1.05); }
+.kai-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.kai-input-hint {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 8px;
+}
+
+/* ── Resume Button inside Chat ───────────────────────────── */
+.kai-resume-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: var(--accent-gradient);
+    color: #fff !important;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+    text-decoration: none !important;
+}
+.kai-resume-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px var(--accent-glow);
+}
+
+/* ── Capabilities list ───────────────────────────────────── */
+.kai-capabilities { list-style: none !important; padding-left: 0 !important; }
+.kai-capabilities li { margin: 6px 0 !important; }
+
+/* ── Responsive adjustments ──────────────────────────────── */
+@media (max-width: 480px) {
+    .kai-widget {
+        right: 16px;
+        left: 16px;
+        bottom: 96px;
+        width: auto;
+        height: calc(100vh - 120px);
+    }
+    .kai-bubble { right: 16px; bottom: 20px; }
+}
+
+
+/* ============================================================
+   Internships / Experience Section Styling
+   ============================================================ */
+.internships {
+    background: var(--bg-secondary);
+}
+
+.timeline {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* Vertical line */
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 40px;
+    width: 2px;
+    background: var(--border-color);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 40px;
+    padding-left: 80px;
+}
+
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: 20px;
+    top: 12px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 2px solid var(--accent-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-secondary);
+    font-size: 1.1rem;
+    z-index: 1;
+    transition: var(--transition);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.timeline-item:hover .timeline-dot {
+    transform: scale(1.1);
+    border-color: var(--accent-secondary);
+    color: var(--accent-primary);
+    box-shadow: 0 0 15px rgba(0, 212, 170, 0.4);
+}
+
+.timeline-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 28px;
+    transition: var(--transition);
+    position: relative;
+}
+
+.timeline-card:hover {
+    border-color: rgba(108, 99, 255, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.timeline-header {
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 14px;
+}
+
+.timeline-duration {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(108, 99, 255, 0.1);
+    color: var(--accent-primary);
+    border: 1px solid rgba(108, 99, 255, 0.2);
+    border-radius: 50px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.timeline-title {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.timeline-company {
+    font-size: 0.92rem;
+    color: var(--accent-secondary);
+    font-weight: 500;
+}
+
+.timeline-body p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+
+.timeline-projects {
+    list-style: none;
+    padding-left: 0;
+}
+
+.timeline-projects li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.timeline-projects li::before {
+    content: '✦';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--accent-secondary);
+    font-size: 0.8rem;
+}
+
+.timeline-projects li strong {
+    color: var(--text-primary);
+}
+
+/* Responsive adjustments for timeline */
+@media (max-width: 768px) {
+    .timeline::before {
+        left: 20px;
+    }
+    .timeline-dot {
+        left: 0px;
+        width: 38px;
+        height: 38px;
+        font-size: 0.95rem;
+    }
+    .timeline-item {
+        padding-left: 55px;
+    }
+}
+
+
